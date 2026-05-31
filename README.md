@@ -1,100 +1,101 @@
-# Math Modeling LaTeX Skill
+# 数学建模 LaTeX 论文 Skill
 
-This skill provides reusable LaTeX templates for MCM/ICM and CUMCM papers. It does not include `.cls` files by default.
+这是一个给 Codex 和 Claude Code 使用的 skill，用来生成和检查美赛 MCM/ICM、国赛 CUMCM 的 LaTeX 数学建模论文项目。
 
-## Copy A Template
+它不是一个单独发布的 LaTeX 模板包，而是一组给 AI 编程助手读取的工作规则、模板和检查脚本。安装后，你可以直接让 Codex 或 Claude Code 按比赛类型生成论文项目，并让它处理模板选择、引用方式、匿名信息检查和编译前检查。
 
-MCM/ICM:
+## 适合做什么
+
+- 生成 MCM/ICM 英文论文项目。
+- 生成 CUMCM 中文论文项目。
+- 在 `mcmthesis`、`cumcmthesis`、`ctexart` fallback 之间做稳定选择。
+- 控制是否启用 `ref.bib` / BibTeX。
+- 避免默认写入学校、队员、导师、赛区等真实身份信息。
+- 提供 PDF 页数、大小和明显身份关键词的提交前检查脚本。
+
+## 安装
+
+把整个 `mathmodel-latex-skill` 文件夹复制到对应助手的 skills 目录下。文件夹名建议保持为 `mathmodel-latex-skill`。
+
+### Codex
+
+Windows PowerShell 示例：
+
+```powershell
+$skills = "$env:USERPROFILE\.codex\skills"
+New-Item -ItemType Directory -Force $skills | Out-Null
+Copy-Item -Recurse -Force . "$skills\mathmodel-latex-skill"
+```
+
+WSL / macOS / Linux 示例：
 
 ```bash
-cp -r templates/mcm-icm my-mcm-paper
-cd my-mcm-paper
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R . "${CODEX_HOME:-$HOME/.codex}/skills/mathmodel-latex-skill"
 ```
 
-CUMCM with `cumcmthesis`:
+### Claude Code / cc-switch
+
+如果你使用 `cc-switch` 管理 Claude Code skills，放到 `.cc-switch/skills`。
+
+Windows PowerShell 示例：
+
+```powershell
+$skills = "$env:USERPROFILE\.cc-switch\skills"
+New-Item -ItemType Directory -Force $skills | Out-Null
+Copy-Item -Recurse -Force . "$skills\mathmodel-latex-skill"
+```
+
+WSL / macOS / Linux 示例：
 
 ```bash
-cp -r templates/cumcm my-cumcm-paper
-cd my-cumcm-paper
-cp main-cumcmthesis.tex main.tex
+mkdir -p "$HOME/.cc-switch/skills"
+cp -R . "$HOME/.cc-switch/skills/mathmodel-latex-skill"
 ```
 
-CUMCM fallback without `cumcmthesis`:
+如果你的 Claude Code 使用其他 skills 目录，请复制到你实际配置的 skills 路径。
 
-```bash
-cp -r templates/cumcm my-cumcm-paper
-cd my-cumcm-paper
-cp main-ctexart-fallback.tex main.tex
+安装后建议开启一个新会话，让新 skill 被重新发现。
+
+## 如何触发
+
+在 Codex 或 Claude Code 里直接描述你的数学建模论文任务即可。可以显式提到 skill 名，也可以只描述比赛类型。
+
+示例：
+
+```text
+使用 mathmodel-latex-skill，给我创建一份 MCM/ICM A 题论文项目，启用 ref.bib。
 ```
 
-## Check LaTeX Environment
-
-From this skill directory:
-
-```bash
-python scripts/check_latex_env.py
+```text
+使用 mathmodel-latex-skill，生成国赛 CUMCM 电子版论文模板；如果没有 cumcmthesis，就用 ctexart fallback。
 ```
 
-If `mcmthesis.cls` is missing, stop MCM/ICM compilation and install it through TeX Live, MiKTeX, or your TeX package manager. For TeX Live, try:
-
-```bash
-tlmgr install mcmthesis
+```text
+用这个 skill 检查我的 CUMCM 论文 PDF，确认页数、大小和身份信息风险。
 ```
 
-If `cumcmthesis.cls` is missing, default to the `ctexart` fallback:
+## 使用时可以指定的关键选项
 
-```bash
-cp main-ctexart-fallback.tex main.tex
-```
+`contest`：比赛类型。常用值是 `MCM/ICM` 或 `CUMCM`。
 
-Only download/provide CUMCMThesis when you explicitly need the `cumcmthesis` class or strict official-class compatibility. Do not assume `tlmgr` can install it.
+`use_ref_bib`：是否启用 `ref.bib`。默认关闭，使用手写参考文献；如果你需要 BibTeX、Zotero/JabRef 导出的 `.bib`，或希望用 `\cite{...}` 管理引用，就让助手启用它。
 
-## Compile
+`strict_class`：是否严格要求官方或常用类文件。CUMCM 如果没有 `cumcmthesis.cls`，默认会走 `ctexart` fallback；只有你明确要求 `cumcmthesis` 时，助手才会停下来让你提供类文件。
 
-Use XeLaTeX through `latexmkrc`:
+## 内置内容
 
-```bash
-latexmk -pdf main.tex
-```
+- `SKILL.md`：AI 助手实际读取的工作规则。
+- `templates/mcm-icm/`：MCM/ICM 模板，优先使用 `mcmthesis`。
+- `templates/cumcm/`：CUMCM 模板，包含 `cumcmthesis` 版本和 `ctexart` fallback。
+- `scripts/check_latex_env.py`：检查本机 LaTeX 类文件和 BibTeX 环境。
+- `scripts/check_pdf.py`：检查 PDF 页数、文件大小和明显身份关键词。
+- `latexmkrc`：默认使用 XeLaTeX 的构建配置。
 
-Chinese CUMCM templates must be compiled with XeLaTeX.
+## 注意事项
 
-## Reference Mode
-
-Templates default to inline references with `thebibliography`.
-
-To use `ref.bib`, change this line in `main.tex`:
-
-```tex
-\userefbibfalse
-```
-
-to:
-
-```tex
-\userefbibtrue
-```
-
-Then add entries to the copied `ref.bib` file and cite them with `\cite{placeholder-ref}`. `latexmk` will run BibTeX automatically. Replace the sample `placeholder-ref` entry and `\nocite{placeholder-ref}` before final submission.
-
-Clean auxiliary files when needed:
-
-```bash
-latexmk -C
-```
-
-## Pre-Submission Check
-
-If official contest limits for the current year are known, pass them explicitly:
-
-```bash
-python scripts/check_pdf.py main.pdf --max-pages <official-page-limit> --max-size-mb <official-size-limit-mb>
-```
-
-If official limits are not provided, omit the page and size flags:
-
-```bash
-python scripts/check_pdf.py main.pdf
-```
-
-Before submission, inspect the generated PDF manually and confirm that it contains no school, team member, adviser, region, email, phone, or other identity information.
+- 本仓库不默认放入 `.cls` 文件。
+- `mcmthesis` 通常由 TeX Live / MiKTeX 管理。
+- `cumcmthesis` 可能需要你自行提供或安装；不要假设 `tlmgr` 一定能安装。
+- 最终比赛提交前，应以当年官方规则为准。
+- 任何由 AI 生成的论文内容都需要人工核验。
