@@ -1,0 +1,119 @@
+\documentclass[UTF8,a4paper,zihao=-4]{ctexart}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,graphicx}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{url}
+
+% Reference mode: set \userefbibtrue to use ref.bib with BibTeX.
+\newif\ifuserefbib
+\userefbibfalse
+
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\title{论文题目占位}
+\author{}
+\date{}
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+  \centering
+  {\heiti\zihao{2} 论文题目占位\par}
+  \vspace{2em}
+  {\heiti\zihao{3} 摘要\par}
+  \vspace{1em}
+  \begin{minipage}{\textwidth}
+    \setlength{\parindent}{2em}
+    这里撰写摘要。摘要应概括问题、模型、算法、结果、检验与结论。不得出现可识别参赛者或机构的真实身份信息。
+
+    \vspace{1em}
+    \noindent\textbf{关键词：}关键词一\quad 关键词二\quad 关键词三
+  \end{minipage}
+  \vfill
+\end{titlepage}
+
+\setcounter{page}{1}
+\hypersetup{pageanchor=true}
+
+% CUMCMThesis 示例说明 2019 年起电子版通常不需要目录。
+% 若当年官方规则明确要求目录，再启用下面两行。
+% \tableofcontents
+% \newpage
+
+\section{问题重述}
+说明问题背景、研究对象和需要完成的任务。
+
+\section{问题分析}
+分析问题的关键因素、数据特征和建模思路。
+
+\section{模型假设}
+\begin{itemize}
+  \item 假设一：说明假设内容及合理性。
+  \item 假设二：说明假设内容及合理性。
+\end{itemize}
+
+\section{符号说明}
+\begin{table}[htbp]
+  \centering
+  \caption{主要符号说明}
+  \begin{tabular}{cl}
+    \toprule
+    符号 & 含义 \\
+    \midrule
+    $x$ & 决策变量占位 \\
+    $t$ & 时间指标占位 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{模型建立与求解}
+\subsection{模型一}
+给出模型结构、参数估计、算法步骤和求解结果。
+
+\begin{equation}
+  \min_x f(x), \quad \text{s.t.}\quad g_i(x)\le 0,\ i=1,\ldots,m.
+\end{equation}
+
+\subsection{模型二}
+根据题目需要扩展、修正或对比模型。
+
+\section{模型检验与灵敏度分析}
+说明模型验证方法，并分析关键参数变化对结果的影响。
+
+\section{模型评价与推广}
+总结模型优点、局限性和可推广方向。
+
+\section{结论}
+凝练给出最终结论和建议。
+
+\ifuserefbib
+\nocite{placeholder-ref}
+\bibliographystyle{unsrt}
+\bibliography{ref}
+\else
+\begin{thebibliography}{99}
+\bibitem{placeholder} 作者. 文献题名占位[J]. 期刊或出版社, 年份.
+\end{thebibliography}
+\fi
+
+\appendix
+\section{补充材料}
+放置推导、算法伪代码、扩展表格或图形说明。
+
+\section{支撑材料文件列表}
+\begin{itemize}
+  \item \texttt{code/main.py}：主要求解程序占位。
+  \item \texttt{data/input.csv}：输入数据占位。
+  \item \texttt{results/output.csv}：输出结果占位。
+\end{itemize}
+
+\section{AI 工具使用详情说明}
+如使用 AI 工具，应按照当年竞赛规则如实说明工具名称、版本或访问日期、使用环节、生成内容范围和人工核验方式。如未使用，应按当年规则填写未使用说明。
+
+\end{document}
