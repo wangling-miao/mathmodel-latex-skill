@@ -136,6 +136,13 @@ Before final submission:
 - Confirm manually that the PDF does not contain real personal, school, adviser, team, email, phone, or regional identity information.
 - Confirm all generated figures, tables, code listings, references, and supporting-material filenames match the final paper.
 
-## 1.0.7 final-validation note
+## 1.0.8 final-validation note
 
 When copying a bundled template into a new paper project, copy the template-local `latexmkrc` as well. The CUMCM template-local `latexmkrc` enforces XeLaTeX and provides a BibTeX fallback; the MCM/ICM template-local `latexmkrc` only provides the BibTeX fallback so `latexmk -pdf main.tex` remains the expected workflow.
+
+
+## 1.0.8 CUMCM caption and appendix rule
+
+- For CUMCM Chinese templates, table and figure captions must omit the colon: use `表 1 主要符号说明` / `图 1 模型流程图`, not `表 1: 主要符号说明`.
+- Appendix section headings must render as `附录A ...`, `附录B ...`, `附录C ...`. After `\appendix`, set `\thesection` to `附录\mbox{\Alph{section}}` and reset the CTeX section style to use `number = \thesection` so xeCJK does not insert a visual space between `附录` and `A`.
+- Do not simulate appendix or captions manually in text; use LaTeX `\section`, `\caption`, `\label`, and `\ref`.
