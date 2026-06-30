@@ -1,6 +1,12 @@
 \documentclass[withoutpreface,bwprint]{cumcmthesis}
 
 \usepackage{amsmath,amssymb,booktabs,graphicx,tabularx,array,float,url}
+% 国赛中文图表题名：显示为“表 1 标题”“图 1 标题”，不使用英文冒号。
+\usepackage{caption}
+\DeclareCaptionLabelSeparator{cnquad}{\quad}
+\captionsetup{labelsep=cnquad}
+\captionsetup[table]{name=表}
+\captionsetup[figure]{name=图}
 \usepackage{gbt7714}
 \citestyle{numbers}
 \usepackage{hyperref}
@@ -33,21 +39,12 @@
 \keywords{优化模型\quad 线性规划\quad 蒙特卡洛模拟\quad 敏感性分析}
 \end{abstract}
 
-% CUMCM 电子版论文默认不要目录；只有当年官方规则明确要求时再启用。
-% \tableofcontents
-% \newpage
-
 \section{问题重述}
 \subsection{问题背景}
 简要重构题目背景，说明研究对象、现实约束和建模必要性。不要大段复制题面，应提炼与模型相关的信息。
 
 \subsection{问题要求}
-结合附件数据和题目小问，将任务拆解为清晰的输出要求：
-\begin{enumerate}
-  \item \textbf{问题一：} 在已知【数据/参数】条件下，建立【模型】并输出【结果表/结果文件】；
-  \item \textbf{问题二：} 在问题一基础上考虑【新增因素】，构建【扩展模型】并比较【指标】；
-  \item \textbf{问题三：} 综合考虑【相关性/风险/多场景】，给出【最终策略】和【验证结论】。
-\end{enumerate}
+结合附件数据和题目小问，将任务拆解为清晰的输出要求。
 
 \section{问题分析}
 \subsection{问题一的分析}
@@ -58,7 +55,6 @@
 
 \subsection{问题三的分析}
 说明问题三如何在前两问基础上扩展，重点交代数据流、模型流和结果流。
-
 
 \section{模型假设}
 \begin{enumerate}
@@ -90,10 +86,10 @@
 说明题目附件、外部数据或自行整理数据的文件名、字段含义、单位、时间/空间粒度和主键。若引用公开数据、软件或文献，应在正文用 \verb|\cite{...}| 标注，并在 \texttt{ref.bib} 中维护对应条目。
 
 \subsection{缺失值与异常值处理}
-说明缺失值、重复值、异常值和单位不一致的处理规则。任何删除、插值、聚合或标准化操作都应给出理由，方便附录代码复现。
+说明缺失值、重复值、异常值和单位不一致的处理规则。
 
 \subsection{建模参数构造}
-说明如何由原始字段计算模型参数、评价指标或约束集合，并给出必要的统计表或图。
+说明如何由原始字段计算模型参数、评价指标或约束集合。
 
 \section{模型建立与求解}
 \subsection{问题一模型的建立与求解}
@@ -101,29 +97,30 @@
 \begin{equation}
   \max Z = \sum_{i}\sum_t r_{it}x_{it} - \sum_i\sum_t c_{it}x_{it}.
 \end{equation}
-其中 $r_{it}$ 表示收益系数，$c_{it}$ 表示成本系数。约束示例如下：
-\begin{align}
-  \sum_i a_{ij}x_{it} &\le b_{jt}, \quad \forall j,t,\\
-  x_{it} &\ge 0, \quad \forall i,t.
-\end{align}
+其中 $r_{it}$ 表示收益系数，$c_{it}$ 表示成本系数。
 
 \subsection{问题二模型的建立与求解}
 说明在问题一模型上的扩展，包括新增参数、不确定因素、风险度量、分类规则或多目标权衡方式。
 
 \subsection{问题三模型的建立与求解}
-说明综合模型、策略生成方法、结果文件输出方式和关键计算步骤。若使用启发式算法，应说明可行性修复和结果验证方法。
+说明综合模型、策略生成方法、结果文件输出方式和关键计算步骤。
 
 \section{模型检验}
-围绕题目核心结论进行检验，可包括误差分析、残差分析、约束可行性检查、边界情形检验、敏感性分析、鲁棒性分析或与基准方案对比。不要只写“结果较好”，应说明检验指标和判据。
+围绕题目核心结论进行检验，可包括误差分析、残差分析、约束可行性检查、敏感性分析、鲁棒性分析或与基准方案对比。
 
 \section{模型评价与推广}
-从适用性、解释性、可复现性、计算复杂度和局限性评价模型。推广部分应说明模型适合扩展到哪些场景，需要补充哪些数据或放宽哪些假设。
+从适用性、解释性、可复现性、计算复杂度和局限性评价模型。
 
-% 若使用 AI 工具，应按当年规则在正文相应位置标注，并在参考文献中列出工具名称、版本/型号、开发机构/公司和使用日期。
 \bibliographystyle{gbt7714-numerical}
 \bibliography{ref}
 
 \appendix
+\renewcommand{\thesection}{附录\mbox{\Alph{section}}}
+\renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
+\ctexset{
+  section = {format = \centering\heiti\zihao{3}, name = {,}, number = \thesection, aftername = \quad},
+  subsection = {format = \heiti\zihao{-4}, number = \thesubsection, aftername = \quad}
+}
 \section{支撑材料文件列表}
 \begin{table}[H]
 \centering
