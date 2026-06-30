@@ -64,9 +64,10 @@ Use this skill to create reproducible LaTeX paper projects for MCM/ICM and CUMCM
 latexmk -pdf main.tex
 ```
 
-- For MCM/ICM, run `scripts/check_latex_env.py` first to verify `mcmthesis.cls`. If `mcmthesis.cls` is missing, stop MCM/ICM project generation or compilation and tell the user to install `mcmthesis` through TeX Live, MiKTeX, or their TeX package manager before retrying.
-- For CUMCM, run `scripts/check_latex_env.py` first to verify `cumcmthesis.cls`. If `cumcmthesis.cls` is missing, default to `templates/cumcm/main-ctexart-fallback.tex`. Only ask the user to provide or install CUMCMThesis when they explicitly require the `cumcmthesis` class or strict official-class compatibility.
-- If `use_ref_bib = true`, run `scripts/check_latex_env.py --use-ref-bib` or otherwise confirm `bibtex` is available before compiling.
+- For MCM/ICM, run `scripts/check_latex_env.py --contest mcm-icm` first to verify `mcmthesis.cls`. If `mcmthesis.cls` is missing, stop MCM/ICM project generation or compilation and tell the user to install `mcmthesis` through TeX Live, MiKTeX, or their TeX package manager before retrying.
+- For CUMCM, run `scripts/check_latex_env.py --contest cumcm` first. If `cumcmthesis.cls` is missing, default to `templates/cumcm/main-ctexart-fallback.tex`; this is a warning, not a failure, as long as the `ctexart` fallback is available.
+- Only when the user explicitly requires the `cumcmthesis` class or strict official-class compatibility, run `scripts/check_latex_env.py --contest cumcm --strict-class` and ask the user to provide or install CUMCMThesis if it fails.
+- If `use_ref_bib = true`, add `--use-ref-bib` to the same contest-specific environment check, for example `scripts/check_latex_env.py --contest mcm-icm --use-ref-bib`.
 - Do not make successful compilation depend on network access. Network downloads are not a valid build step.
 - Before the contest, freeze the final compilable template and dependencies together, including any class files or fonts that the official rules allow and the user has intentionally provided.
 
@@ -87,7 +88,7 @@ Before writing a project:
 - Identify the contest as MCM/ICM or CUMCM.
 - Decide whether `use_ref_bib` is true or false.
 - Choose the matching template directory.
-- Run `scripts/check_latex_env.py`.
+- Run `scripts/check_latex_env.py --contest mcm-icm` or `scripts/check_latex_env.py --contest cumcm`, adding `--use-ref-bib` when BibTeX is needed.
 - Decide whether class dependencies are installed locally or whether a fallback is needed.
 
 Before final submission:
@@ -96,5 +97,6 @@ Before final submission:
 - Open the PDF and inspect the first page, references, appendices, and AI-use section.
 - If official page and file-size limits are known, run `scripts/check_pdf.py <paper.pdf> --max-pages <official-page-limit> --max-size-mb <official-size-limit-mb>`.
 - If official limits are not provided, run `scripts/check_pdf.py <paper.pdf>` without page or size flags, then note that the official current-year limits still need manual confirmation.
-- Confirm the PDF does not contain identity keywords or real personal/institutional information.
+- Treat default identity keyword matches from `check_pdf.py` as warnings that need human review. For the final gate, run `scripts/check_pdf.py <paper.pdf> --identity-mode strict`, using repeated `--ignore-keyword <word>` only for reviewed false positives such as institution names in references or data sources.
+- Confirm manually that the PDF does not contain real personal, school, adviser, team, email, phone, or regional identity information.
 - Confirm all generated figures, tables, code listings, references, and supporting-material filenames match the final paper.
