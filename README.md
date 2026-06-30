@@ -11,7 +11,7 @@
 - 在 `mcmthesis`、`cumcmthesis`、`ctexart` fallback 之间做稳定选择。
 - 控制是否启用 `ref.bib` / BibTeX。
 - 避免默认写入学校、队员、导师、赛区等真实身份信息。
-- 提供 PDF 页数、大小和明显身份关键词的提交前检查脚本。
+- 提供 PDF 页数、大小和身份关键词风险的提交前检查脚本，默认预警，最终提交前可切到严格模式。
 
 ## 安装
 
@@ -75,6 +75,31 @@ cp -R . "$HOME/.cc-switch/skills/mathmodel-latex-skill"
 用这个 skill 检查我的 CUMCM 论文 PDF，确认页数、大小和身份信息风险。
 ```
 
+## 推荐工作流
+
+1. 复制整个 `mathmodel-latex-skill` 文件夹到 Codex 或 Claude Code 的 skills 目录。
+2. 新建一个空论文项目目录，让助手按比赛类型复制对应模板。
+3. 检查 LaTeX 环境：
+
+```bash
+python scripts/check_latex_env.py --contest mcm-icm
+python scripts/check_latex_env.py --contest cumcm
+python scripts/check_latex_env.py --contest cumcm --strict-class
+python scripts/check_latex_env.py --contest mcm-icm --use-ref-bib
+```
+
+4. 根据检查结果选择 `mcmthesis`、`cumcmthesis`，或 CUMCM 的 `ctexart` fallback。
+5. 用 `latexmk -pdf main.tex` 编译，修正缺包、引用和图表路径问题。
+6. 运行 PDF preflight：
+
+```bash
+python scripts/check_pdf.py main.pdf --identity-mode warn
+python scripts/check_pdf.py main.pdf --identity-mode strict
+python scripts/check_pdf.py main.pdf --ignore-keyword University --ignore-keyword 大学
+```
+
+7. 人工核查匿名信息、当年官方规则、页数/大小限制、AI 使用说明和支撑材料清单。
+
 ## 使用时可以指定的关键选项
 
 `contest`：比赛类型。常用值是 `MCM/ICM` 或 `CUMCM`。
@@ -83,13 +108,17 @@ cp -R . "$HOME/.cc-switch/skills/mathmodel-latex-skill"
 
 `strict_class`：是否严格要求官方或常用类文件。CUMCM 如果没有 `cumcmthesis.cls`，默认会走 `ctexart` fallback；只有你明确要求 `cumcmthesis` 时，助手才会停下来让你提供类文件。
 
+`identity-mode`：PDF 身份关键词检查模式。默认 `warn` 只提示风险；真正提交前可以改成 `strict`，让关键词命中直接失败。
+
+`ignore-keyword`：对已经人工确认的误报关键词做临时忽略，例如参考文献或数据来源里的 `University`、`大学`。
+
 ## 内置内容
 
 - `SKILL.md`：AI 助手实际读取的工作规则。
 - `templates/mcm-icm/`：MCM/ICM 模板，优先使用 `mcmthesis`。
 - `templates/cumcm/`：CUMCM 模板，包含 `cumcmthesis` 版本和 `ctexart` fallback。
-- `scripts/check_latex_env.py`：检查本机 LaTeX 类文件和 BibTeX 环境。
-- `scripts/check_pdf.py`：检查 PDF 页数、文件大小和明显身份关键词。
+- `scripts/check_latex_env.py`：按比赛类型检查本机 LaTeX 类文件、fallback 和 BibTeX 环境。
+- `scripts/check_pdf.py`：检查 PDF 页数、文件大小和身份关键词风险，支持 `warn` / `strict` 模式。
 - `latexmkrc`：默认使用 XeLaTeX 的构建配置。
 
 ## 注意事项

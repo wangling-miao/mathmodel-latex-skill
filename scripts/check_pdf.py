@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check a PDF for page count, file size, and obvious identity keywords."""
+"""Check a PDF for page count, file size, and possible identity keywords."""
 
 from __future__ import annotations
 
@@ -136,6 +136,18 @@ def parse_args() -> argparse.Namespace:
         help="Additional identity keyword to flag; can be repeated",
     )
     parser.add_argument(
+        "--ignore-keyword",
+        action="append",
+        default=[],
+        help="Identity keyword to ignore for this PDF; can be repeated",
+    )
+    parser.add_argument(
+        "--identity-mode",
+        choices=("warn", "strict"),
+        default="warn",
+        help="How to handle identity keyword matches. Default: warn without failing.",
+    )
+    parser.add_argument(
         "--fallback-text-bytes",
         type=int,
         default=2_000_000,
@@ -148,6 +160,7 @@ def main() -> int:
     args = parse_args()
     pdf_path = args.pdf
     failures: list[str] = []
+    warnings: list[str] = []
 
     if not pdf_path.is_file():
         print(f"ERROR: PDF not found: {pdf_path}")
@@ -171,11 +184,25 @@ def main() -> int:
             failures.append(f"page count {pages} exceeds limit {args.max_pages}")
 
     text = get_text(pdf_path, args.fallback_text_bytes)
-    keywords = DEFAULT_IDENTITY_KEYWORDS + args.keyword
-    found = sorted({keyword for keyword in keywords if keyword and keyword.lower() in text.lower()})
+    ignored_keywords = {keyword.lower() for keyword in args.ignore_keyword if keyword}
+    keywords = [
+        keyword
+        for keyword in DEFAULT_IDENTITY_KEYWORDS + args.keyword
+        if keyword and keyword.lower() not in ignored_keywords
+    ]
+    found = sorted(
+        {keyword for keyword in keywords if keyword.lower() in text.lower()},
+        key=str.lower,
+    )
     if found:
-        failures.append("possible identity keywords found: " + ", ".join(found))
+        message = "possible identity keywords found: " + ", ".join(found)
+        if args.identity_mode == "strict":
+            failures.append(message)
+        else:
+            warnings.append(message)
         print("Identity keywords: " + ", ".join(found))
+        if ignored_keywords:
+            print("Ignored identity keywords: " + ", ".join(args.ignore_keyword))
     else:
         print("Identity keywords: none found")
 
@@ -184,6 +211,13 @@ def main() -> int:
         for failure in failures:
             print(f"- {failure}")
         return 1
+
+    if warnings:
+        print("\nPASSED WITH WARNINGS")
+        for warning in warnings:
+            print(f"- {warning}")
+        print("Rerun with `--identity-mode strict` to fail on identity keyword matches before final submission.")
+        return 0
 
     print("\nPASSED")
     return 0
