@@ -5,7 +5,7 @@
 % third-party CUMCMThesis template, replace this file with that template's
 % cumcmthesis.cls and follow its license and font requirements.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{cumcmthesis}[2026/06/30 v1.0.6 lightweight CUMCM electronic-paper compatibility class]
+\ProvidesClass{cumcmthesis}[2026/06/30 v1.0.8 lightweight CUMCM electronic-paper compatibility class]
 
 \newif\if@mcm@bwprint
 \@mcm@bwprintfalse
