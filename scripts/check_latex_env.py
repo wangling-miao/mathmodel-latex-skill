@@ -7,6 +7,7 @@ import argparse
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 
 CONTEST_ALIASES = {
@@ -63,6 +64,33 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def local_skill_file(filename: str, contest: str | None = None) -> str | None:
+    script_dir = Path(__file__).resolve().parent
+    root = script_dir.parent
+    candidates: list[Path] = [Path.cwd() / filename]
+    if contest == "cumcm":
+        candidates.append(root / "templates" / "cumcm" / filename)
+    if contest == "mcm-icm":
+        candidates.append(root / "templates" / "mcm-icm" / filename)
+    for candidate in candidates:
+        if candidate.is_file():
+            return str(candidate)
+    return None
+
+
+def find_class_file(filename: str, contest: str | None = None) -> str | None:
+    return local_skill_file(filename, contest) or kpsewhich(filename)
+
+
+def report_class_file(filename: str, contest: str | None = None) -> str | None:
+    path = find_class_file(filename, contest)
+    if path:
+        print(f"OK: {filename} found at {path}")
+    else:
+        print(f"MISSING: {filename}")
+    return path
+
+
 def report_kpsewhich(filename: str) -> str | None:
     path = kpsewhich(filename)
     if path:
@@ -81,7 +109,7 @@ def main() -> int:
         return 1
 
     if args.contest == "mcm-icm":
-        if not report_kpsewhich("mcmthesis.cls"):
+        if not report_class_file("mcmthesis.cls", "mcm-icm"):
             failures.append("mcmthesis.cls")
             print(
                 "Hint for MCM/ICM: install the package with `tlmgr install mcmthesis` "
@@ -89,7 +117,7 @@ def main() -> int:
             )
 
     if args.contest == "cumcm":
-        if report_kpsewhich("cumcmthesis.cls"):
+        if report_class_file("cumcmthesis.cls", "cumcm"):
             print("CUMCM class mode: use `templates/cumcm/main-cumcmthesis.tex` or `templates/cumcm/main.tex`.")
         elif args.strict_class:
             failures.append("cumcmthesis.cls")

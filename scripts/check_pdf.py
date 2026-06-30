@@ -35,6 +35,16 @@ DEFAULT_IDENTITY_KEYWORDS = [
     "Province",
     "Email",
     "Phone",
+    "报名号",
+    "参赛编号",
+    "队号",
+    "学校名称",
+    "院系",
+    "班级",
+    "身份证",
+    "邮箱",
+    "电话",
+    "手机",
 ]
 
 
@@ -117,11 +127,24 @@ def get_page_count(pdf_path: Path) -> int | None:
 
 
 def get_text(pdf_path: Path, fallback_bytes: int) -> str:
-    return (
-        extract_text_with_python(pdf_path)
-        or extract_text_with_pdftotext(pdf_path)
-        or extract_text_fallback(pdf_path, fallback_bytes)
-    )
+    """Extract searchable text from a PDF.
+
+    Prefer combining independent extractors rather than short-circuiting on the
+    first non-empty result. Some Python PDF libraries can return garbled text for
+    Chinese XeLaTeX PDFs; in that case pdftotext often still returns readable
+    Unicode text. Combining sources makes identity-keyword checks more reliable.
+    """
+    chunks: list[str] = []
+    seen: set[str] = set()
+    for extractor in (extract_text_with_pdftotext, extract_text_with_python):
+        text = extractor(pdf_path)
+        normalized = text.strip()
+        if normalized and normalized not in seen:
+            chunks.append(text)
+            seen.add(normalized)
+    if chunks:
+        return "\n".join(chunks)
+    return extract_text_fallback(pdf_path, fallback_bytes)
 
 
 def parse_args() -> argparse.Namespace:

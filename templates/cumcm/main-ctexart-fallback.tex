@@ -1,97 +1,143 @@
 \documentclass[UTF8,a4paper,zihao=-4]{ctexart}
-
 \usepackage[margin=2.5cm]{geometry}
-\usepackage{amsmath,amssymb,booktabs,graphicx}
 \usepackage{fancyhdr}
-\usepackage{hyperref}
-\usepackage{url}
-
-% Reference mode: set \userefbibtrue to use ref.bib with BibTeX.
-\newif\ifuserefbib
-\userefbibfalse
-
 \pagestyle{fancy}
 \fancyhf{}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0pt}
 
-\title{论文题目占位}
+\usepackage{amsmath,amssymb,booktabs,graphicx,tabularx,array,float,url}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,allcolors=black,breaklinks=true}
+
+% 优秀论文风格：一级标题居中，显示为“一、问题重述”；二级标题显示为“1.1 问题背景”。
+\ctexset{
+  section = {format = \centering\heiti\zihao{3}, name = {,、}, number = \chinese{section}, aftername = \quad},
+  subsection = {format = \heiti\zihao{-4}, number = \arabic{section}.\arabic{subsection}, aftername = \quad},
+  subsubsection = {format = \heiti\zihao{-4}, number = \arabic{section}.\arabic{subsection}.\arabic{subsubsection}, aftername = \quad}
+}
+
+% Reference mode: set \userefbibtrue to use ref.bib with BibTeX.
+\newif\ifuserefbib
+\userefbibfalse
+
+\title{基于【核心方法】的【研究对象】建模与优化}
 \author{}
 \date{}
 
 \begin{document}
 
-\hypersetup{pageanchor=false}
-\begin{titlepage}
-  \centering
-  {\heiti\zihao{2} 论文题目占位\par}
+\setcounter{page}{1}
+\thispagestyle{fancy}
+\begin{center}
+  {\heiti\zihao{2} 基于【核心方法】的【研究对象】建模与优化\par}
   \vspace{2em}
   {\heiti\zihao{3} 摘要\par}
-  \vspace{1em}
-  \begin{minipage}{\textwidth}
-    \setlength{\parindent}{2em}
-    这里撰写摘要。摘要应概括问题、模型、算法、结果、检验与结论。不得出现可识别参赛者或机构的真实身份信息。
+\end{center}
+\vspace{1em}
+\setlength{\parindent}{2em}
+摘要应保持一页以内，采用“问题—方法—结果—结论”的写法。第一段简要说明研究背景、数据来源和总体建模路线，不写空泛口号，不出现真实身份信息。
 
-    \vspace{1em}
-    \noindent\textbf{关键词：}关键词一\quad 关键词二\quad 关键词三
-  \end{minipage}
-  \vfill
-\end{titlepage}
+针对问题一，说明本问的核心任务、所建模型、关键约束和主要结果。正式论文中应给出可核验的定量结果或结果文件名，例如最优方案、误差指标、收益值、覆盖率、命中率等；没有运行结果时只保留占位，不得编造数值。
 
-\setcounter{page}{1}
-\hypersetup{pageanchor=true}
+针对问题二，说明相较问题一新增的不确定因素、约束或目标函数变化，给出求解算法和验证方式。若结果写入附件模板，应在摘要中说明对应结果文件。
 
-% CUMCMThesis 示例说明 2019 年起电子版通常不需要目录。
-% 若当年官方规则明确要求目录，再启用下面两行。
+针对问题三，说明扩展模型、情景分析、敏感性检验或策略比较结论。最后用一句话概括模型的适用性、稳定性和局限。
+
+\vspace{1em}
+\noindent{\heiti 关键词：}关键词一\quad 关键词二\quad 关键词三\quad 关键词四
+
+\newpage
+
+% CUMCM 电子版论文默认不要目录；只有当年官方规则明确要求时再启用。
 % \tableofcontents
 % \newpage
 
 \section{问题重述}
-说明问题背景、研究对象和需要完成的任务。
+\subsection{问题背景}
+简要重构题目背景，说明研究对象、现实约束和建模必要性。不要大段复制题面，应提炼与模型相关的信息。
+
+\subsection{问题要求}
+结合附件数据和题目小问，将任务拆解为清晰的输出要求：
+\begin{enumerate}
+  \item \textbf{问题一：} 在已知【数据/参数】条件下，建立【模型】并输出【结果表/结果文件】；
+  \item \textbf{问题二：} 在问题一基础上考虑【新增因素】，构建【扩展模型】并比较【指标】；
+  \item \textbf{问题三：} 综合考虑【相关性/风险/多场景】，给出【最终策略】和【验证结论】。
+\end{enumerate}
 
 \section{问题分析}
-分析问题的关键因素、数据特征和建模思路。
+\subsection{问题一的分析}
+说明问题一的输入、输出、目标函数、约束条件和评价指标，并指出与后续问题的衔接关系。
+
+\subsection{问题二的分析}
+说明问题二新增因素如何改变参数、约束或目标函数，以及为什么需要采用相应的优化、预测或仿真方法。
+
+\subsection{问题三的分析}
+说明问题三如何在前两问基础上扩展，重点交代数据流、模型流和结果流。
+
+\subsection{总体思路}
+可在此放置模型流程图或数据流图。流程图应包含“数据输入—预处理—模型建立—算法求解—结果输出—模型检验”，避免装饰性空图。
 
 \section{模型假设}
-\begin{itemize}
-  \item 假设一：说明假设内容及合理性。
-  \item 假设二：说明假设内容及合理性。
-\end{itemize}
+\begin{enumerate}
+  \item \textbf{假设 1：} 【假设内容】。解释：【说明该假设对应的公式、约束或数据处理理由，以及可能影响】。
+  \item \textbf{假设 2：} 【假设内容】。解释：【说明为何不改变题目核心要求，以及如何在敏感性分析中检验】。
+  \item \textbf{假设 3：} 【假设内容】。解释：【说明该假设对求解规模、参数估计或结果解释的作用】。
+\end{enumerate}
 
 \section{符号说明}
-\begin{table}[htbp]
+本文涉及的主要变量符号如表~\ref{tab:symbols} 所示。未在表中声明的局部符号在首次出现处说明。
+\begin{table}[H]
   \centering
   \caption{主要符号说明}
-  \begin{tabular}{cl}
+  \label{tab:symbols}
+  \begin{tabularx}{\textwidth}{cXc}
     \toprule
-    符号 & 含义 \\
+    符号 & 说明 & 单位 \\
     \midrule
-    $x$ & 决策变量占位 \\
-    $t$ & 时间指标占位 \\
+    $i$ & 对象、地块、节点或样本编号 & -- \\
+    $t$ & 时间、批次或阶段编号 & -- \\
+    $x_{it}$ & 第 $i$ 个对象在阶段 $t$ 的决策变量 & 按题意填写 \\
+    $J$ & 目标函数值或综合评价指标 & -- \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
+\section{数据预处理}
+\subsection{数据来源与字段说明}
+说明题目附件、外部数据或自行整理数据的文件名、字段含义、单位、时间/空间粒度和主键。若无外部数据，应明确说明仅使用题目附件。
+
+\subsection{缺失值与异常值处理}
+说明缺失值、重复值、异常值和单位不一致的处理规则。任何删除、插值、聚合或标准化操作都应给出理由，方便附录代码复现。
+
+\subsection{建模参数构造}
+说明如何由原始字段计算模型参数、评价指标或约束集合，并给出必要的统计表或图。
+
 \section{模型建立与求解}
-\subsection{模型一}
-给出模型结构、参数估计、算法步骤和求解结果。
-
+\subsection{问题一模型的建立与求解}
+先定义决策变量，再给出目标函数和约束。每条约束后应说明其对应的题目条件。
 \begin{equation}
-  \min_x f(x), \quad \text{s.t.}\quad g_i(x)\le 0,\ i=1,\ldots,m.
+  \max Z = \sum_{i}\sum_t r_{it}x_{it} - \sum_i\sum_t c_{it}x_{it}.
 \end{equation}
+其中 $r_{it}$ 表示收益系数，$c_{it}$ 表示成本系数。约束示例如下：
+\begin{align}
+  \sum_i a_{ij}x_{it} &\le b_{jt}, \quad \forall j,t,\\
+  x_{it} &\ge 0, \quad \forall i,t.
+\end{align}
 
-\subsection{模型二}
-根据题目需要扩展、修正或对比模型。
+\subsection{问题二模型的建立与求解}
+说明在问题一模型上的扩展，包括新增参数、不确定因素、风险度量、分类规则或多目标权衡方式。
 
-\section{模型检验与灵敏度分析}
-说明模型验证方法，并分析关键参数变化对结果的影响。
+\subsection{问题三模型的建立与求解}
+说明综合模型、策略生成方法、结果文件输出方式和关键计算步骤。若使用启发式算法，应说明可行性修复和结果验证方法。
+
+\section{模型检验}
+围绕题目核心结论进行检验，可包括误差分析、残差分析、约束可行性检查、边界情形检验、敏感性分析、鲁棒性分析或与基准方案对比。不要只写“结果较好”，应说明检验指标和判据。
 
 \section{模型评价与推广}
-总结模型优点、局限性和可推广方向。
+从适用性、解释性、可复现性、计算复杂度和局限性评价模型。推广部分应说明模型适合扩展到哪些场景，需要补充哪些数据或放宽哪些假设。
 
-\section{结论}
-凝练给出最终结论和建议。
-
+% 若使用 AI 工具，应按当年规则在正文相应位置标注，并在参考文献中列出工具名称、版本/型号、开发机构/公司和使用日期。
 \ifuserefbib
 \nocite{placeholder-ref}
 \bibliographystyle{unsrt}
@@ -103,17 +149,27 @@
 \fi
 
 \appendix
-\section{补充材料}
-放置推导、算法伪代码、扩展表格或图形说明。
-
 \section{支撑材料文件列表}
-\begin{itemize}
-  \item \texttt{code/main.py}：主要求解程序占位。
-  \item \texttt{data/input.csv}：输入数据占位。
-  \item \texttt{results/output.csv}：输出结果占位。
-\end{itemize}
+\begin{table}[H]
+\centering
+\caption{支撑材料文件列表}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+文件名 & 功能说明 \\
+\midrule
+\texttt{code/q1.py} & 问题一模型求解程序，输出对应结果表或结果文件 \\
+\texttt{code/q2.py} & 问题二模型求解程序，输出对应结果表或结果文件 \\
+\texttt{data\_processed/clean\_data.csv} & 清洗后的建模数据 \\
+\texttt{result/} & 论文图表、结果 Excel/CSV 与中间结果 \\
+\texttt{ai\_record/AI工具使用详情.pdf} & 若使用 AI 工具，放置支撑材料中的 AI 工具使用详情说明 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{源程序代码说明}
+附录应包含建模所用的完整、可运行源程序代码，或列出代码文件并在支撑材料中提供。若确实未使用程序，应按官方规范在此明确说明。
 
 \section{AI 工具使用详情说明}
-如使用 AI 工具，应按照当年竞赛规则如实说明工具名称、版本或访问日期、使用环节、生成内容范围和人工核验方式。如未使用，应按当年规则填写未使用说明。
+若使用 AI 工具，应按照当年竞赛规则如实说明工具名称、版本或型号、使用环节、关键交互摘要、采纳情况和人工修改情况。若未使用 AI 工具，应按当年规则在参考文献之后或规定位置声明未使用。
 
 \end{document}
