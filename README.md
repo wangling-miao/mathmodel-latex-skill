@@ -1,6 +1,6 @@
 # 数学建模 LaTeX 论文 Skill
 
-版本：1.0.7。此版本在 1.0.5 的 ref.bib 与交叉引用修复基础上，进一步移除 CUMCM 模板中的“总体思路”小节，并新增关键词约束：关键词必须优先选用数学建模教材和竞赛论文中常见的模型、方法、算法、评价或检验术语，避免把题目对象或行业场景直接作为关键词。
+版本：1.0.8。此版本在 1.0.7 的终校验基础上，修复 CUMCM 中文图表题名冒号和附录编号显示；同时保留 1.0.5 的 ref.bib 与交叉引用修复基础上，进一步移除 CUMCM 模板中的“总体思路”小节，并新增关键词约束：关键词必须优先选用数学建模教材和竞赛论文中常见的模型、方法、算法、评价或检验术语，避免把题目对象或行业场景直接作为关键词。
 
 这是一个给 Codex 和 Claude Code 使用的 skill，用来生成和检查美赛 MCM/ICM、国赛 CUMCM 的 LaTeX 数学建模论文项目。
 
@@ -147,7 +147,7 @@ python scripts/check_pdf.py main.pdf --ignore-keyword University --ignore-keywor
 - 交付前运行：`python scripts/check_latex_refs.py main.tex --bib ref.bib`；若为 CUMCM 项目，再运行 `python scripts/check_latex_keywords.py main.tex`。
 
 
-## 1.0.7 CUMCM 结构与关键词约定
+## 1.0.8 CUMCM 结构与关键词约定
 
 - CUMCM 正文不单独设置“总体思路”小节；问题分析节按小问展开，例如 `2.1 问题一的分析`、`2.2 问题二的分析`。
 - 若需要展示模型路线，优先使用“模型流程图”并放入问题分析或模型建立部分的自然段中，不另起 `2.4 总体思路`。
@@ -155,8 +155,15 @@ python scripts/check_pdf.py main.pdf --ignore-keyword University --ignore-keywor
 - 关键词不要直接使用题目对象、行业背景或宽泛任务词，例如：农作物种植策略、乡村农业、蔬菜销售、企业生产、交通问题、研究方法。
 - 交付前运行：`python scripts/check_latex_keywords.py main.tex`。
 
-## 1.0.7 终校验修正
+## 1.0.8 终校验修正
 
 - 在 `templates/cumcm/` 和 `templates/mcm-icm/` 内分别加入模板本地 `latexmkrc`，使用户单独复制模板目录时也能使用 BibTeX fallback，不依赖 skill 根目录的 `latexmkrc`。
 - CUMCM 模板本地 `latexmkrc` 默认 XeLaTeX；MCM/ICM 模板本地 `latexmkrc` 仅处理 BibTeX fallback，保留 `latexmk -pdf main.tex` 工作流。
 - BibTeX 检测从“命令存在”升级为“命令存在且可执行 `--version`”，避免损坏的 `bibtex` 替代项导致编译失败。
+
+
+## 1.0.8 图表题名与附录编号修正
+
+- CUMCM 模板现在默认将图表题名渲染为 `表 1 标题`、`图 1 标题`，去掉 `表 1: 标题` 中的英文冒号。
+- 附录一级标题现在渲染为 `附录A 支撑材料文件列表`、`附录B 源程序代码说明`、`附录C AI 工具使用详情说明`。
+- 该修正已同时应用到 `main.tex`、`main-cumcmthesis.tex` 和 `main-ctexart-fallback.tex`。
