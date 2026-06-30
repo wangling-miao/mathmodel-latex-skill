@@ -33,6 +33,14 @@ def kpsewhich(filename: str) -> str | None:
     return path if result.returncode == 0 and path else None
 
 
+def find_bibtex_command() -> str | None:
+    for command in ("bibtex", "bibtex.original", "bibtex8", "bibtexu"):
+        path = shutil.which(command)
+        if path:
+            return path
+    return None
+
+
 def normalize_contest(value: str) -> str:
     normalized = value.strip().lower().replace("_", "-")
     try:
@@ -135,12 +143,20 @@ def main() -> int:
                 print("Hint for CUMCM fallback: install the ctex package through TeX Live or MiKTeX.")
 
     if args.use_ref_bib:
-        if shutil.which("bibtex") is None:
+        bibtex_path = find_bibtex_command()
+        if bibtex_path is None:
             failures.append("bibtex")
             print("MISSING: bibtex")
             print("Hint for ref.bib: install BibTeX through TeX Live, MiKTeX, or your TeX package manager.")
         else:
-            print(f"OK: bibtex found at {shutil.which('bibtex')}")
+            print(f"OK: BibTeX command found at {bibtex_path}")
+        if args.contest == "cumcm":
+            if not report_kpsewhich("gbt7714.sty"):
+                failures.append("gbt7714.sty")
+                print("Hint for CUMCM ref.bib: install the gbt7714 package, or switch citations to cite/unsrt.")
+            if not report_kpsewhich("gbt7714-numerical.bst"):
+                failures.append("gbt7714-numerical.bst")
+                print("Hint for CUMCM ref.bib: install the gbt7714 bibliography style, or switch bibliography style to unsrt.")
 
     if failures:
         print("\nFAILED")

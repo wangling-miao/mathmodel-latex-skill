@@ -17,10 +17,13 @@ Use this skill to create reproducible LaTeX paper projects for MCM/ICM and CUMCM
 ## Reference Mode
 
 - Decide `use_ref_bib` before generating or editing a project.
-- Default to `use_ref_bib = false` when the user does not mention a bibliography database, citation manager, BibTeX, or `ref.bib`; keep the inline `thebibliography` block and do not require BibTeX.
+- Default to `use_ref_bib = true` for newly generated projects because this skill ships `ref.bib` and competition papers benefit from citation-key based reference management. The bundled templates use `ref.bib` directly and do not include an active inline `thebibliography` fallback. Use inline `thebibliography` only when the user explicitly asks not to use BibTeX or the local environment lacks BibTeX, and generate that as a separate edit rather than mixing both modes.
 - Set `use_ref_bib = true` when the user asks for `ref.bib`, BibTeX, citation-key based references, Zotero/JabRef/BibDesk exports, or a reusable bibliography database.
-- When `use_ref_bib = true`, set `\userefbibtrue` in `main.tex`, keep `ref.bib` beside `main.tex`, cite entries with `\cite{...}`, and let `latexmk` run BibTeX automatically. Replace the sample `placeholder-ref` entry and `\nocite{placeholder-ref}` before final submission.
+- When `use_ref_bib = true`, keep `ref.bib` beside `main.tex`, cite entries with `\cite{...}`, and let `latexmk` run BibTeX automatically. For CUMCM, prefer `gbt7714` with `gbt7714-numerical` and `\citestyle{numbers}` so references render as numeric entries instead of author-year labels. Replace the sample `placeholder-ref` entry before final submission. Do not use `\nocite{...}` unless the user explicitly wants uncited sources listed.
 - Do not mix active `thebibliography` and active `\bibliography{ref}` in the same generated paper.
+- Separate literature citations from cross references: use `\cite{bib-key}` only for literature/software/data sources in `ref.bib`; use `\label{...}` plus `\ref{...}` or `\eqref{...}` only for figures, tables, equations, algorithms, appendices, or sections.
+- Avoid gratuitous placeholder cross references. Add `\ref` only when the referenced `\label` exists and the sentence genuinely needs a numbered table/figure/equation. Keep `hypertexnames=false` in CUMCM templates to avoid duplicate PDF anchors when counters reset in appendices.
+- Before delivering a project, run `python scripts/check_latex_refs.py main.tex --bib ref.bib` when `ref.bib` mode is active, and fix all missing labels or missing citation keys.
 
 ## MCM/ICM Generation Rules
 
@@ -33,7 +36,7 @@ Use this skill to create reproducible LaTeX paper projects for MCM/ICM and CUMCM
 
 - Treat `mcmthesis` as a formal LaTeX package normally managed by TeX Live or MiKTeX. Do not copy `mcmthesis.cls` into the project by default.
 - Include placeholders for team control number, problem letter, title, summary, keywords, model sections, references, appendices, and `Report on Use of AI`.
-- Support `use_ref_bib` through the `\userefbibfalse` / `\userefbibtrue` switch and `templates/mcm-icm/ref.bib`.
+- Support `use_ref_bib` with `templates/mcm-icm/ref.bib`; the bundled template uses BibTeX directly.
 - Include a table of contents after `\maketitle` for MCM/ICM by default, matching the `mcmthesis` demo pattern. Remove it only if the current official rules or user request say not to include it.
 - Keep all identity fields generic. Use placeholders such as `0000000`, `A`, and `Paper Title Placeholder`.
 - Do not add school names, author names, adviser names, regions, email addresses, phone numbers, or acknowledgements that reveal the team.
@@ -51,7 +54,7 @@ Use this skill to create reproducible LaTeX paper projects for MCM/ICM and CUMCM
 - Use XeLaTeX for all Chinese templates.
 - Default to electronic version options `withoutpreface,bwprint`.
 - Include a dedicated abstract page, keywords, body sections, references, appendices, supporting-material file list, and AI tool usage details placeholder.
-- Support `use_ref_bib` through the `\userefbibfalse` / `\userefbibtrue` switch and `templates/cumcm/ref.bib`.
+- Support `use_ref_bib` with `templates/cumcm/ref.bib`; the bundled template uses BibTeX directly.
 - Do not generate a table of contents in CUMCM electronic submissions by default. Keep only commented optional `\tableofcontents` lines for years or local rules that explicitly require it.
 - Do not generate school, team member, adviser, instructor, campus, province, or regional identity information. Leave identity-related class commands absent or blank unless the user explicitly supplies non-sensitive placeholders required by official rules.
 
@@ -60,10 +63,24 @@ Use this skill to create reproducible LaTeX paper projects for MCM/ICM and CUMCM
 - For CUMCM, follow `templates/cumcm/STYLE_GUIDE.md` when generating paper structure or examples.
 - Use the default section order: 摘要, 问题重述, 问题分析, 模型假设, 符号说明, 数据预处理, 模型建立与求解, 模型检验, 模型评价与推广, 参考文献, 附录.
 - Render level-one CUMCM sections as Chinese numerals with a dunhao, such as `一、问题重述`; render subsections as `1.1 问题背景`.
+- Do not create a standalone subsection named `总体思路`, `总体模型思路`, `整体思路`, or similar in CUMCM final-style papers. In excellent-paper style, `问题分析` should normally be organized by subproblem, such as `2.1 问题一的分析`, `2.2 问题二的分析`, and `2.3 问题三的分析`. If a route explanation is needed, write it as a short paragraph inside the relevant analysis section or use a `模型流程图`; do not add `2.4 总体思路`.
+- CUMCM keywords must be mathematical-modeling terms, preferably terms found in mathematical modeling textbooks or common contest papers. Use model/method/algorithm/evaluation terms such as `优化模型`, `线性规划`, `混合整数规划`, `目标规划`, `动态规划`, `蒙特卡洛模拟`, `回归分析`, `聚类分析`, `主成分分析`, `层次分析法`, `综合评价`, `风险决策`, `敏感性分析`, `鲁棒性分析`, `时间序列`, and `灰色预测`. Avoid using research objects, industry scenarios, or题目背景词 as keywords, such as `农作物种植策略`, `乡村农业`, `蔬菜销售`, or `交通问题`, unless they are paired with a recognized modeling method and the user explicitly requires a domain keyword.
+- Before delivering a CUMCM project, run `python scripts/check_latex_keywords.py main.tex` and revise keywords that fail the modeling-term check.
+
 - Standardize the data section title as `数据预处理`. Do not use `数据读取与预处理`, `数据剔写`, `数据说明与读取`, or other ad-hoc titles in final-style CUMCM papers.
 - Write model assumptions as a numbered list. Each item must follow the pattern `假设 n：...。解释：...` so the assumption and its modeling justification are both visible.
 - Do not add non-paper chapters such as `编译测试结果`, `LaTeX 测试说明`, or standalone `算法实现说明` to CUMCM example PDFs. Put run commands, compile notes, and code explanations in README or appendices.
 - In the abstract and result sections, never invent numerical results. Use explicit placeholders when no solver output exists.
+
+
+### Reference and Cross-Reference Hygiene
+
+- Use `ref.bib` for references by default. Keep all bibliographic metadata in `ref.bib`; do not leave a live `thebibliography` block in final-style examples.
+- Cite data sources, papers, software, and AI tools with `\cite{...}`. The cited key must exist in `ref.bib`.
+- Reference figures, tables, formulas, and appendices with `\label{...}` and `\ref{...}` / `\eqref{...}`. The label must exist in the same project.
+- Do not cite tables with `\cite` and do not cite papers with `\ref`.
+- Do not use `\nocite{placeholder-ref}` in final examples, because it creates references that are not grounded in the text.
+- Run `scripts/check_latex_refs.py` before compiling final deliverables; then compile and ensure the log has no `undefined references` or `Citation ... undefined` warnings.
 
 ## Compilation Rules
 
@@ -118,3 +135,7 @@ Before final submission:
 - Treat default identity keyword matches from `check_pdf.py` as warnings that need human review. For the final gate, run `scripts/check_pdf.py <paper.pdf> --identity-mode strict`, using repeated `--ignore-keyword <word>` only for reviewed false positives such as institution names in references or data sources.
 - Confirm manually that the PDF does not contain real personal, school, adviser, team, email, phone, or regional identity information.
 - Confirm all generated figures, tables, code listings, references, and supporting-material filenames match the final paper.
+
+## 1.0.7 final-validation note
+
+When copying a bundled template into a new paper project, copy the template-local `latexmkrc` as well. The CUMCM template-local `latexmkrc` enforces XeLaTeX and provides a BibTeX fallback; the MCM/ICM template-local `latexmkrc` only provides the BibTeX fallback so `latexmk -pdf main.tex` remains the expected workflow.

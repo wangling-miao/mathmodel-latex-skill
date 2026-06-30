@@ -1,8 +1,10 @@
 \documentclass[withoutpreface,bwprint]{cumcmthesis}
 
 \usepackage{amsmath,amssymb,booktabs,graphicx,tabularx,array,float,url}
+\usepackage{gbt7714}
+\citestyle{numbers}
 \usepackage{hyperref}
-\hypersetup{colorlinks=true,allcolors=black,breaklinks=true}
+\hypersetup{colorlinks=true,allcolors=black,breaklinks=true,hypertexnames=false}
 
 % 优秀论文风格：一级标题居中，显示为“一、问题重述”；二级标题显示为“1.1 问题背景”。
 \ctexset{
@@ -10,10 +12,6 @@
   subsection = {format = \heiti\zihao{-4}, number = \arabic{section}.\arabic{subsection}, aftername = \quad},
   subsubsection = {format = \heiti\zihao{-4}, number = \arabic{section}.\arabic{subsection}.\arabic{subsubsection}, aftername = \quad}
 }
-
-% Reference mode: set \userefbibtrue to use ref.bib with BibTeX.
-\newif\ifuserefbib
-\userefbibfalse
 
 \title{基于【核心方法】的【研究对象】建模与优化}
 \tihao{A}
@@ -32,7 +30,7 @@
 
 针对问题三，说明扩展模型、情景分析、敏感性检验或策略比较结论。最后用一句话概括模型的适用性、稳定性和局限。
 
-\keywords{关键词一\quad 关键词二\quad 关键词三\quad 关键词四}
+\keywords{优化模型\quad 线性规划\quad 蒙特卡洛模拟\quad 敏感性分析}
 \end{abstract}
 
 % CUMCM 电子版论文默认不要目录；只有当年官方规则明确要求时再启用。
@@ -61,8 +59,6 @@
 \subsection{问题三的分析}
 说明问题三如何在前两问基础上扩展，重点交代数据流、模型流和结果流。
 
-\subsection{总体思路}
-可在此放置模型流程图或数据流图。流程图应包含“数据输入—预处理—模型建立—算法求解—结果输出—模型检验”，避免装饰性空图。
 
 \section{模型假设}
 \begin{enumerate}
@@ -72,7 +68,7 @@
 \end{enumerate}
 
 \section{符号说明}
-本文涉及的主要变量符号如表~\ref{tab:symbols} 所示。未在表中声明的局部符号在首次出现处说明。
+本文涉及的主要变量符号汇总如下。未在表中声明的局部符号在首次出现处说明。
 \begin{table}[H]
   \centering
   \caption{主要符号说明}
@@ -91,7 +87,7 @@
 
 \section{数据预处理}
 \subsection{数据来源与字段说明}
-说明题目附件、外部数据或自行整理数据的文件名、字段含义、单位、时间/空间粒度和主键。若无外部数据，应明确说明仅使用题目附件。
+说明题目附件、外部数据或自行整理数据的文件名、字段含义、单位、时间/空间粒度和主键。若引用公开数据、软件或文献，应在正文用 \verb|\cite{...}| 标注，并在 \texttt{ref.bib} 中维护对应条目。
 
 \subsection{缺失值与异常值处理}
 说明缺失值、重复值、异常值和单位不一致的处理规则。任何删除、插值、聚合或标准化操作都应给出理由，方便附录代码复现。
@@ -124,15 +120,8 @@
 从适用性、解释性、可复现性、计算复杂度和局限性评价模型。推广部分应说明模型适合扩展到哪些场景，需要补充哪些数据或放宽哪些假设。
 
 % 若使用 AI 工具，应按当年规则在正文相应位置标注，并在参考文献中列出工具名称、版本/型号、开发机构/公司和使用日期。
-\ifuserefbib
-\nocite{placeholder-ref}
-\bibliographystyle{unsrt}
+\bibliographystyle{gbt7714-numerical}
 \bibliography{ref}
-\else
-\begin{thebibliography}{99}
-\bibitem{placeholder} 作者. 文献题名占位[J]. 期刊或出版社, 年份.
-\end{thebibliography}
-\fi
 
 \appendix
 \section{支撑材料文件列表}

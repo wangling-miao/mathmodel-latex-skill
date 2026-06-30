@@ -10,13 +10,9 @@
   abstract = true
 }
 
-\usepackage{amsmath,amssymb,booktabs,graphicx}
+\usepackage{amsmath,amssymb,booktabs,graphicx,cite}
 \usepackage{lastpage}
 \usepackage{hyperref}
-
-% Reference mode: set \userefbibtrue to use ref.bib with BibTeX.
-\newif\ifuserefbib
-\userefbibfalse
 
 \setlength{\headheight}{13.6pt}
 \hypersetup{hypertexnames=false}
@@ -31,7 +27,7 @@
 Write a concise summary of the problem, assumptions, models, results, sensitivity analysis, and recommendations. Keep this page anonymous and avoid real identity information.
 
 \begin{keywords}
-keyword one; keyword two; keyword three
+Optimization; Simulation; Sensitivity Analysis
 \end{keywords}
 \end{abstract}
 
@@ -94,19 +90,12 @@ State limitations honestly and connect them to future improvement.
 \section{Conclusion}
 Summarize the final findings and recommendations.
 
-\ifuserefbib
-\nocite{placeholder-ref}
 \bibliographystyle{unsrt}
 \bibliography{ref}
-\else
-\begin{thebibliography}{99}
-\bibitem{placeholder} Author. ``Title Placeholder.'' Journal or Publisher, Year.
-\end{thebibliography}
-\fi
 
 \appendix
 \section{Additional Tables and Figures}
-Place supplementary derivations, validation details, or extended result tables here.
+Place supplementary derivations, validation details, or extended result tables here. Cite literature and data sources with \verb|\cite{...}| only; reference figures, tables, and equations with \verb|\ref{...}| or \verb|\eqref{...}| only when the label exists.
 
 \section{Code Availability}
 List anonymous filenames for code or data used in the model, if permitted by the contest rules.

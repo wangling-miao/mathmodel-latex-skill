@@ -179,6 +179,25 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+
+def keyword_matches(text: str, keyword: str) -> bool:
+    """Return whether an identity-risk keyword appears.
+
+    Some official contest terms contain broad identity words. For example,
+    全国大学生数学建模竞赛 includes 大学 as part of 大学生, which is not a
+    school identity leak. Keep broad keyword checks, but suppress known safe
+    substrings rather than forcing users to ignore the keyword globally.
+    """
+    text_lower = text.lower()
+    key_lower = keyword.lower()
+    if keyword == "大学":
+        return re.search(r"大学(?!生)", text) is not None
+    if keyword == "School":
+        # Do not flag common publisher/tool names such as scikit-learn docs unless
+        # a user adds stricter custom keywords.
+        return key_lower in text_lower
+    return key_lower in text_lower
+
 def main() -> int:
     args = parse_args()
     pdf_path = args.pdf
@@ -214,7 +233,7 @@ def main() -> int:
         if keyword and keyword.lower() not in ignored_keywords
     ]
     found = sorted(
-        {keyword for keyword in keywords if keyword.lower() in text.lower()},
+        {keyword for keyword in keywords if keyword_matches(text, keyword)},
         key=str.lower,
     )
     if found:
